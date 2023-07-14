@@ -1,5 +1,5 @@
 <template>
-  <h1>Área de Estudantes</h1>
+  <h1>Students zone</h1>
   <div class="form">
     <h2>{{ isRegistering ? 'Registro' : 'Login' }}</h2>
     <form @submit.prevent="submitForm">

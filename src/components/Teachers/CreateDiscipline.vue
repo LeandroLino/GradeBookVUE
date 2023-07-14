@@ -1,7 +1,7 @@
 <template>
   <div class="report-cards">
     <div>
-      <h2>Create Disciplina</h2>
+      <h2>Create Discipline</h2>
       <div class="input-column">
         <input v-model="disciplineData.name" placeholder="Name" />
         <input v-model="disciplineData.workload" placeholder="Workload" />
