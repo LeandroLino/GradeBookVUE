@@ -1,9 +1,10 @@
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
-const API_BASE_URL = 'http://127.0.0.1:8000'
+
+const API_BASE_URL = import.meta.env.VITE_API_URL
 let DECODEDTOKEN = ''
 let TOKEN = ''
-if(localStorage.getItem('token')){
+if (localStorage.getItem('token')) {
   TOKEN = localStorage.getItem('token')
   DECODEDTOKEN = jwt_decode(TOKEN)
 }
@@ -11,7 +12,6 @@ if(localStorage.getItem('token')){
 async function makeRequest(method, endpoint, data, token) {
   try {
     const url = API_BASE_URL + endpoint
-    console.log(url)
     const headers = {
       'Content-Type': 'application/json'
     }
@@ -24,7 +24,6 @@ async function makeRequest(method, endpoint, data, token) {
       headers: headers,
       data: data
     })
-    console.log(response)
     return response.data
   } catch (error) {
     console.error('Erro na requisição:', error)
@@ -36,8 +35,9 @@ const API_ENDPOINTS = {
     login: '/api/student/login/',
     register: '/api/student/register/',
     list_disciplines: '/api/student/list-disciplines/',
-    list_report_cards: '/api/student/list/student/%/discipline/%/',
-    list_students: '/api/student/list/'
+    list_report_cards_from_discipline: '/api/student/list/student/%/discipline/%/',
+    list_students: '/api/student/list/',
+    list_report_cards: '/api/student/list-report-cards/'
   },
   teacher: {
     login: '/api/teacher/login/',
@@ -59,12 +59,7 @@ const API_ENDPOINTS = {
 
 const api = {
   createDiscipline: async (data, type) => {
-    return makeRequest(
-      'post',
-      API_ENDPOINTS[type].create_discipline,
-      data,
-      TOKEN
-    )
+    return makeRequest('post', API_ENDPOINTS[type].create_discipline, data, TOKEN)
   },
 
   login: async (email, password, type) => {
@@ -74,7 +69,7 @@ const api = {
     }
     return makeRequest('post', API_ENDPOINTS[type].login, data)
   },
-  enrollStudent: async (discipline_id,student_id,) => {
+  enrollStudent: async (discipline_id, student_id) => {
     const route = API_ENDPOINTS.discipline.enroll_student
       .replace('%', discipline_id)
       .replace('%', student_id)
@@ -90,8 +85,7 @@ const api = {
   },
 
   list_report_cards: async (discipline_id, type) => {
-
-    const route = API_ENDPOINTS[type].list_report_cards
+    const route = API_ENDPOINTS[type].list_report_cards_from_discipline
       .replace('%', DECODEDTOKEN.id)
       .replace('%', discipline_id)
 
@@ -99,24 +93,31 @@ const api = {
   },
   listStudents: async () => {
     return makeRequest('get', API_ENDPOINTS.student.list_students, {}, TOKEN)
-
   },
   listStudentsDiscipline: async (discipline_id) => {
-    return makeRequest('get', API_ENDPOINTS.discipline.list_disciplines+ `${discipline_id}/`, {}, TOKEN)
-
+    return makeRequest(
+      'get',
+      API_ENDPOINTS.discipline.list_disciplines + `${discipline_id}/`,
+      {},
+      TOKEN
+    )
   },
-  createNotes: async(discipline_id, student_id, data) => {
-    console.log(discipline_id, student_id)
+  listStudentsReportCards: async () => {
+    return makeRequest(
+      'get',
+      API_ENDPOINTS.student.list_report_cards + `${DECODEDTOKEN.id}/`,
+      {},
+      TOKEN
+    )
+  },
+  createNotes: async (discipline_id, student_id, data) => {
     const route = API_ENDPOINTS.notes.create_note
-    .replace('%', student_id)
-    .replace('%', discipline_id)
+      .replace('%', student_id)
+      .replace('%', discipline_id)
     return makeRequest('post', route, data, TOKEN)
   },
-  createCards: async(student_id, note_id, data) => {
-    console.log(student_id, note_id)
-    const route = API_ENDPOINTS.card.create_card
-    .replace('%', student_id)
-    .replace('%', note_id)
+  createCards: async (student_id, note_id, data) => {
+    const route = API_ENDPOINTS.card.create_card.replace('%', student_id).replace('%', note_id)
     return makeRequest('post', route, data, TOKEN)
   },
   register: async (name, email, password, type) => {

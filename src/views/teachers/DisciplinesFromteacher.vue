@@ -3,7 +3,7 @@
     <h1>My Disciplines</h1>
     <div class="discipline-cards">
       <div class="discipline-card empty-card" @click="CreateDisciplineForm">
-        <h3>Create a discipline</h3>
+        <h3>Cadastre uma disciplina</h3>
         <i class="icon">+</i>
       </div>
       <div
@@ -50,7 +50,7 @@ export default {
       showCreateForm: false
     }
   },
-  async afterMounted() {
+  async mounted() {
     if (!localStorage.getItem('token')) {
       this.$router.push('/')
     }

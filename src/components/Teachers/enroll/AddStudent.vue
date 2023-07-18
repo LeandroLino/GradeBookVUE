@@ -1,17 +1,18 @@
-<script setup>
-</script>
+<script setup></script>
 <template>
-    <div class="drawer-overlay">
-      <div class="drawer">
-        <h2>Add Student</h2>
-        <select v-model="selectedStudent">
-          <option value="">Select a student</option>
-          <option v-for="student in students" :key="student.id" :value="student">{{ student.name }}</option>
-        </select>
-        <button @click="addStudent">Add</button>
-        <button @click="closeStudentDrawer">Close</button>
-      </div>
+  <div class="drawer-overlay">
+    <div class="drawer">
+      <h2>Add Student</h2>
+      <select v-model="selectedStudent">
+        <option value="">Select a student</option>
+        <option v-for="student in students" :key="student.id" :value="student">
+          {{ student.name }}
+        </option>
+      </select>
+      <button @click="addStudent">Add</button>
+      <button @click="closeStudentDrawer">Close</button>
     </div>
+  </div>
 </template>
 
 <script>
@@ -22,9 +23,9 @@ const selectedStudent = ref(null)
 export default {
   data() {
     return {
-        discipline: {},
-        students: {},
-        selectedStudent: null
+      discipline: {},
+      students: {},
+      selectedStudent: null
     }
   },
   props: {
@@ -39,18 +40,19 @@ export default {
   },
   methods: {
     async fetchStudents() {
-        const response = await api.listStudents()
-        this.students = response
+      const response = await api.listStudents()
+      this.students = response
     },
     closeStudentDrawer() {
       this.showStudentDrawer = false
+      this.$emit('closeStudentDrawer')
     },
     async addStudent() {
-        console.log(this.discipline.id, this.selectedStudent.id)
-        await api.enrollStudent(this.discipline.id, this.selectedStudent.id)
-        this.$emit('closeStudentDrawer')
-        this.closeStudentDrawer()
-    },
+      console.log(this.discipline.id, this.selectedStudent.id)
+      await api.enrollStudent(this.discipline.id, this.selectedStudent.id)
+      this.$emit('closeStudentDrawer')
+      this.closeStudentDrawer()
+    }
   }
 }
 </script>

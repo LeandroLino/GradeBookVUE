@@ -1,63 +1,60 @@
-<script setup>
-import DisciplineContainer from '../../components/Students/DisciplineContainer.vue'
-</script>
 <template>
   <div class="discipline-list">
-    <h1>My Disciplines</h1>
-    <div v-if="disciplines.length === 0" class="empty-message">
-      Você ainda não tem disciplinas aqui
-    </div>
-    <div class="discipline-cards">
-      <div
-        v-for="discipline in disciplines"
-        :key="discipline.id"
-        class="discipline-card"
-        @click="openDiscipline(discipline)"
+    <div class="nav-list">
+      <h1
+        @click="setActiveTab('disciplines')"
+        :class="{ active: activeTab === 'disciplines' }"
+        id="disciplinesTab"
+        class="nav-select"
       >
-        <h3>{{ discipline.name }}</h3>
-        <p>Students: {{ discipline.students.length }}</p>
-        <p>Teacher: {{ discipline.teacher ? discipline.teacher.name : 'Sem professor! ' }}</p>
-      </div>
+        My Disciplines
+      </h1>
+      <h1
+        @click="setActiveTab('reportCards')"
+        :class="{ active: activeTab === 'reportCards' }"
+        id="reportCardsTab"
+        class="nav-select"
+      >
+        My Report Cards
+      </h1>
     </div>
-    <div v-if="selectedDiscipline" class="discipline-overlay">
-      <div class="discipline-modal">
-        <DisciplineContainer
-          :disciplineId="selectedDiscipline"
-          @close-discipline="closeDiscipline"
-        />
-      </div>
-    </div>
+    <component :setActiveTab="setActiveTab" :is="currentTabComponent"></component>
   </div>
 </template>
 
 <script>
-import api from '../../utils/api'
+import ListDisciplines from '../../components/Students/ListDisciplines.vue'
+import ListReports from '../../components/Students/ListReports.vue'
 
 export default {
   data() {
     return {
-      disciplines: [],
-      selectedDiscipline: null
+      selectedDiscipline: null,
+      activeTab: 'disciplines'
     }
   },
-  async mounted() {
+  mounted() {
     if (!localStorage.getItem('token')) {
       this.$router.push('/')
     }
-    const response = await api.list('student')
-    this.disciplines = response
+  },
+  computed: {
+    currentTabComponent() {
+      if (this.activeTab === 'disciplines') {
+        return ListDisciplines
+      } else if (this.activeTab === 'reportCards') {
+        return ListReports
+      }
+      return null
+    }
   },
   methods: {
-    openDiscipline(discipline) {
-      this.selectedDiscipline = discipline
-    },
-    closeDiscipline() {
-      this.selectedDiscipline = null
+    setActiveTab(tab) {
+      this.activeTab = tab
     }
   }
 }
 </script>
-
 <style scoped>
 .discipline-list {
   max-width: 800px;
@@ -138,5 +135,46 @@ h1 {
   color: #fff;
   font-size: 16px;
   margin-bottom: 20px;
+}
+
+h1.clickable {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: #212121;
+  transition: background-color 0.3s ease-in-out;
+}
+
+h1.clickable:hover {
+  background-color: #303030;
+}
+
+div > h1 {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.active {
+  background-color: #303030;
+}
+
+.nav-select {
+  cursor: pointer;
+  width: 200px;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
 }
 </style>

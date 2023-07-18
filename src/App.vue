@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="wrapper">
       <nav>
         <template v-if="isLoggedIn">
-          <a @click="logout">Logout</a>
+          <RouterLink to="/" @click="logout">Logout</RouterLink>
         </template>
         <template v-else>
           <RouterLink to="/">Login with Student!</RouterLink>

@@ -31,6 +31,7 @@ export default {
       await api.createDiscipline(this.disciplineData, 'discipline')
       this.disciplineData.name = ''
       this.disciplineData.workload = ''
+      this.$emit('close-create-discipline')
     },
     closeCreateDrawer() {
       this.$emit('close-create-discipline')
