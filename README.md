@@ -1,5 +1,7 @@
 # GradeBookVUE - Deloitte
 
+[Notion do projeto](https://moored-cloth-8a0.notion.site/Grade-Book-a2fee07989784714b9a3dba1924e1c6a?pvs=4)
+
 1 - Clone o repositório, após isso será necessário instalar todas as dependencias do projeto, é possivel fazer isso utilizando o compando
 ``` npm install ```
 Ou
