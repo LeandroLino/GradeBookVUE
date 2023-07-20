@@ -42,7 +42,7 @@ export default {
   },
   watch: {
     async setActiveTab() {
-      const response = await api.list('student')
+      const response = await api.list('student', localStorage.getItem('token'))
       this.disciplines = response
     }
   },
@@ -50,7 +50,7 @@ export default {
     if (!localStorage.getItem('token')) {
       this.$router.push('/')
     }
-    const response = await api.list('student')
+    const response = await api.list('student', localStorage.getItem('token'))
     this.disciplines = response
   },
   methods: {

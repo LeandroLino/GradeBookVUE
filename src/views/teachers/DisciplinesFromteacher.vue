@@ -59,7 +59,7 @@ export default {
   methods: {
     async fetchDisciplines() {
       try {
-        const response = await api.list('teacher')
+        const response = await api.list('teacher', localStorage.getItem('token'))
         this.disciplines = response
       } catch (error) {
         console.error('Error fetching disciplines:', error)

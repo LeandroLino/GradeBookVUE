@@ -4,6 +4,15 @@ import RegisternLogin from '../../components/Teachers/RegisternLogin.vue'
 
 <template>
   <main>
-    <RegisternLogin />
+    <RegisternLogin @setLogin="setLogin" />
   </main>
 </template>
+<script>
+export default {
+  methods: {
+    setLogin() {
+      this.$emit('setLogin', true)
+    }
+  }
+}
+</script>

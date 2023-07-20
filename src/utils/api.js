@@ -1,11 +1,11 @@
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
+import { getItem } from './helpers'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL
+const TOKEN = getItem('token')
 let DECODEDTOKEN = ''
-let TOKEN = ''
-if (localStorage.getItem('token')) {
-  TOKEN = localStorage.getItem('token')
+if (TOKEN) {
   DECODEDTOKEN = jwt_decode(TOKEN)
 }
 
@@ -18,6 +18,7 @@ async function makeRequest(method, endpoint, data, token) {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
     }
+
     const response = await axios({
       method: method,
       url: url,
@@ -75,13 +76,9 @@ const api = {
       .replace('%', student_id)
     return makeRequest('put', route, {})
   },
-  list: async (type) => {
-    return makeRequest(
-      'get',
-      API_ENDPOINTS[type].list_disciplines + `${DECODEDTOKEN.id}/`,
-      {},
-      TOKEN
-    )
+  list: async (type, token) => {
+    const decode = jwt_decode(token)
+    return makeRequest('get', API_ENDPOINTS[type].list_disciplines + `${decode.id}/`, {}, token)
   },
 
   list_report_cards: async (discipline_id, type) => {
@@ -102,13 +99,10 @@ const api = {
       TOKEN
     )
   },
-  listStudentsReportCards: async () => {
-    return makeRequest(
-      'get',
-      API_ENDPOINTS.student.list_report_cards + `${DECODEDTOKEN.id}/`,
-      {},
-      TOKEN
-    )
+  listStudentsReportCards: async (token) => {
+    console.log(token)
+    const decode = jwt_decode(token)
+    return makeRequest('get', API_ENDPOINTS.student.list_report_cards + `${decode.id}/`, {}, token)
   },
   createNotes: async (discipline_id, student_id, data) => {
     const route = API_ENDPOINTS.notes.create_note

@@ -53,6 +53,7 @@
 
 <script>
 import api from '../../utils/api'
+import { setItem } from '../../utils/helpers'
 
 export default {
   data() {
@@ -64,6 +65,12 @@ export default {
       },
       isRegistering: false,
       errorMessage: ''
+    }
+  },
+  props: {
+    setLogin: {
+      type: Function,
+      required: true
     }
   },
   methods: {
@@ -90,8 +97,9 @@ export default {
       }
     },
     setToken(token) {
-      localStorage.setItem('token', token)
-      this.$router.push('/teacher/disciplines')
+      setItem('token', token)
+      this.$emit('setLogin', true)
+      this.$router.replace('/teacher/disciplines')
     },
     toggleMode() {
       this.isRegistering = !this.isRegistering

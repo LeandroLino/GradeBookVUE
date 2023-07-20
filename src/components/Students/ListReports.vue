@@ -44,7 +44,7 @@ export default {
     if (!localStorage.getItem('token')) {
       this.$router.push('/')
     }
-    const response = await api.listStudentsReportCards('student')
+    const response = await api.listStudentsReportCards(localStorage.getItem('token'))
     this.reportCards = response
   },
   methods: {

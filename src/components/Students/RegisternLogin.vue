@@ -53,6 +53,7 @@
 
 <script>
 import api from '../../utils/api'
+import { setItem } from '../../utils/helpers'
 
 export default {
   data() {
@@ -66,12 +67,18 @@ export default {
       errorMessage: ''
     }
   },
+  props: {
+    setLogin: {
+      type: Function,
+      required: true
+    }
+  },
   methods: {
     async submitForm() {
       if (!this.isRegistering) {
         const response = await api.login(this.apiData.email, this.apiData.password, 'student')
         if (response && response.access_token) {
-          this.setToken(response.access_token)
+          await this.setToken(response.access_token)
         } else {
           this.showError('Credenciais inválidas')
         }
@@ -83,15 +90,16 @@ export default {
           'student'
         )
         if (response && response.access_token) {
-          this.setToken(response.access_token)
+          await this.setToken(response.access_token)
         } else {
           this.showError('Erro ao registrar')
         }
       }
     },
-    setToken(token) {
-      localStorage.setItem('token', token)
-      this.$router.push('/student/disciplines')
+    async setToken(token) {
+      setItem('token', token)
+      this.$emit('setLogin', true)
+      this.$router.replace('/student/disciplines')
     },
     toggleMode() {
       this.isRegistering = !this.isRegistering
@@ -110,7 +118,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 * {
   font-family: 'Poppins', sans-serif;
 }

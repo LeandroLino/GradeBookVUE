@@ -1,7 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
   <header>
     <div class="wrapper">
@@ -17,20 +13,32 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </header>
 
-  <RouterView />
+  <RouterView @setLogin="setLogin" />
 </template>
 
 <script>
 export default {
-  computed: {
-    isLoggedIn() {
-      return !!localStorage.getItem('token')
+  data() {
+    return {
+      isLoggedIn: false
     }
   },
+  mounted() {
+    this.checkLoginStatus()
+  },
   methods: {
-    logout() {
+    checkLoginStatus() {
+      const token = localStorage.getItem('token')
+      this.isLoggedIn = !!token
+    },
+    setLogin(bool) {
+      this.isLoggedIn = bool
+      console.log(bool)
+    },
+    async logout() {
+      this.setLogin(false)
       localStorage.removeItem('token')
-      this.$router.push('/')
+      this.$router.replace('/')
     }
   }
 }
